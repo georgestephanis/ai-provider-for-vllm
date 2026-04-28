@@ -28,11 +28,10 @@ parameters:
 			- vendor/
 			# Temporary: these files depend on unreleased WordPress core AI Client classes.
 			- includes/Plugin.php
-			- includes/Metadata/OllamaModelMetadataDirectory.php
-			- includes/Models/OllamaImageGenerationModel.php
-			- includes/Models/OllamaTextGenerationModel.php
-			- includes/Models/Traits/OllamaRequestOptionsTrait.php
-			- includes/Provider/OllamaProvider.php
-			- includes/Settings/OllamaSettings.php
+			- includes/Metadata/VllmModelMetadataDirectory.php
+			- includes/Models/VllmTextGenerationModel.php
+			- includes/Models/Traits/VllmRequestOptionsTrait.php
+			- includes/Provider/VllmProvider.php
+			- includes/Settings/VllmSettings.php
 		analyseAndScan:
 			- node_modules (?)

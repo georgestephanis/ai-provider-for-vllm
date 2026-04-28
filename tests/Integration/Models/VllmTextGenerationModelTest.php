@@ -2,9 +2,9 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForOllama\Tests\Integration\Models;
+namespace GeorgeStephanis\AiProviderForVllm\Tests\Integration\Models;
 
-use Fueled\AiProviderForOllama\Tests\Integration\Mocks\MockHttpTransporter;
+use GeorgeStephanis\AiProviderForVllm\Tests\Integration\Mocks\MockHttpTransporter;
 use PHPUnit\Framework\TestCase;
 use WordPress\AiClient\Providers\DTO\ProviderMetadata;
 use WordPress\AiClient\Providers\Enums\ProviderTypeEnum;
@@ -15,33 +15,33 @@ use WordPress\AiClient\Providers\Models\DTO\ModelConfig;
 use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
 
 /**
- * Tests for OllamaTextGenerationModel request behavior.
+ * Tests for VllmTextGenerationModel request behavior.
  *
- * @covers \Fueled\AiProviderForOllama\Models\OllamaTextGenerationModel
+ * @covers \GeorgeStephanis\AiProviderForVllm\Models\VllmTextGenerationModel
  */
-class OllamaTextGenerationModelTest extends TestCase {
+class VllmTextGenerationModelTest extends TestCase {
 
 	/**
 	 * The model under test (via the expose_create_request() helper).
 	 *
-	 * @var MockOllamaTextGenerationModel
+	 * @var MockVllmTextGenerationModel
 	 */
-	private MockOllamaTextGenerationModel $model;
+	private MockVllmTextGenerationModel $model;
 
 	protected function setUp(): void {
 		parent::setUp();
-		putenv( 'OLLAMA_HOST=http://localhost:11434' );
+		putenv( 'VLLM_HOST=http://localhost:8000' );
 
-		$model_metadata    = new ModelMetadata( 'llama3.2', 'llama3.2', array(), array() );
-		$provider_metadata = new ProviderMetadata( 'ollama', 'Ollama', ProviderTypeEnum::cloud(), null, null );
+		$model_metadata    = new ModelMetadata( 'qwen3-14b', 'qwen3-14b', array(), array() );
+		$provider_metadata = new ProviderMetadata( 'vllm', 'vLLM', ProviderTypeEnum::cloud(), null, null );
 
-		$this->model = new MockOllamaTextGenerationModel( $model_metadata, $provider_metadata );
+		$this->model = new MockVllmTextGenerationModel( $model_metadata, $provider_metadata );
 		$this->model->setHttpTransporter( new MockHttpTransporter() );
 		$this->model->setRequestAuthentication( new ApiKeyRequestAuthentication( '' ) );
 	}
 
 	protected function tearDown(): void {
-		putenv( 'OLLAMA_HOST' );
+		putenv( 'VLLM_HOST' );
 		parent::tearDown();
 	}
 
@@ -83,14 +83,14 @@ class OllamaTextGenerationModelTest extends TestCase {
 	}
 
 	/**
-	 * Tests that the request URI starts with the Ollama provider base URL.
+	 * Tests that the request URI starts with the vLLM provider base URL.
 	 */
 	public function test_request_uses_provider_base_url(): void {
 		$request = $this->model->expose_create_request(
 			HttpMethodEnum::POST(),
 			'chat/completions'
 		);
-		$this->assertStringStartsWith( 'http://localhost:11434', $request->getUri() );
+		$this->assertStringStartsWith( 'http://localhost:8000', $request->getUri() );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class OllamaTextGenerationModelTest extends TestCase {
 	/**
 	 * Tests that JSON schema output is nested at json_schema.schema.
 	 */
-	public function test_prepare_response_format_wraps_schema_for_ollama_openai_compat(): void {
+	public function test_prepare_response_format_wraps_schema_for_vllm_openai_compat(): void {
 		$schema = array(
 			'type'       => 'object',
 			'properties' => array(
@@ -157,8 +157,8 @@ class OllamaTextGenerationModelTest extends TestCase {
 			ModelConfig::fromArray(
 				array(
 					'customOptions' => array(
-						'ollama.request_timeout' => 45,
-						'ollama.connect_timeout' => 2,
+						'vllm.request_timeout' => 45,
+						'vllm.connect_timeout' => 2,
 					),
 				)
 			)
@@ -169,9 +169,9 @@ class OllamaTextGenerationModelTest extends TestCase {
 			'chat/completions',
 			array(),
 			array(
-				'ollama.request_timeout' => 45,
-				'ollama.connect_timeout' => 2,
-				'model'                  => 'llama3.2',
+				'vllm.request_timeout' => 45,
+				'vllm.connect_timeout' => 2,
+				'model'                => 'qwen3-14b',
 			)
 		);
 
@@ -180,7 +180,7 @@ class OllamaTextGenerationModelTest extends TestCase {
 		$this->assertSame( 2.0, $request->getOptions()->getConnectTimeout() );
 		$this->assertSame(
 			array(
-				'model' => 'llama3.2',
+				'model' => 'qwen3-14b',
 			),
 			$request->getData()
 		);
@@ -199,8 +199,8 @@ class OllamaTextGenerationModelTest extends TestCase {
 			ModelConfig::fromArray(
 				array(
 					'customOptions' => array(
-						'ollama.request_timeout' => 90,
-						'ollama.connect_timeout' => 2,
+						'vllm.request_timeout' => 90,
+						'vllm.connect_timeout' => 2,
 					),
 				)
 			)

@@ -18,12 +18,12 @@ test.describe( 'Plugin settings', () => {
 
 		// Ensure the page title is correct.
 		await expect(
-			page.locator( '.wrap h1', { hasText: 'Ollama Settings' } )
+			page.locator( '.wrap h1', { hasText: 'vLLM Settings' } )
 		).toHaveCount( 1 );
 
 		// Ensure an error message is displayed.
 		await expect(
-			page.locator( '#ollama-model-status', {
+			page.locator( '#vllm-model-status', {
 				hasText: 'AI provider not configured',
 			} )
 		).toHaveCount( 1 );

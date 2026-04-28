@@ -2,9 +2,9 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForOllama\Tests\Integration\Plugin;
+namespace GeorgeStephanis\AiProviderForVllm\Tests\Integration\Plugin;
 
-use Fueled\AiProviderForOllama\Plugin;
+use GeorgeStephanis\AiProviderForVllm\Plugin;
 use WordPress\AiClient\AiClient;
 use WordPress\AiClient\Providers\AbstractProvider;
 use WordPress\AiClient\Providers\Http\DTO\ApiKeyRequestAuthentication;
@@ -12,7 +12,7 @@ use WordPress\AiClient\Providers\Http\DTO\ApiKeyRequestAuthentication;
 /**
  * Tests for Plugin.
  *
- * @covers \Fueled\AiProviderForOllama\Plugin
+ * @covers \GeorgeStephanis\AiProviderForVllm\Plugin
  */
 class PluginTest extends \WP_UnitTestCase {
 
@@ -24,34 +24,34 @@ class PluginTest extends \WP_UnitTestCase {
 	private Plugin $plugin;
 
 	/**
-	 * The original OLLAMA_HOST value before each test.
+	 * The original VLLM_HOST value before each test.
 	 *
 	 * @var string|false
 	 */
-	private $original_ollama_host;
+	private $original_vllm_host;
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->plugin             = new Plugin();
-		$this->original_ollama_host = getenv( 'OLLAMA_HOST' );
-		putenv( 'OLLAMA_HOST=' );
-		delete_option( 'ai_provider_for_ollama_settings' );
+		$this->plugin           = new Plugin();
+		$this->original_vllm_host = getenv( 'VLLM_HOST' );
+		putenv( 'VLLM_HOST=' );
+		delete_option( 'ai_provider_for_vllm_settings' );
 	}
 
 	protected function tearDown(): void {
-		$this->restore_ollama_host();
-		delete_option( 'ai_provider_for_ollama_settings' );
+		$this->restore_vllm_host();
+		delete_option( 'ai_provider_for_vllm_settings' );
 		parent::tearDown();
 	}
 
 	/**
-	 * Restores OLLAMA_HOST to its pre-test value.
+	 * Restores VLLM_HOST to its pre-test value.
 	 */
-	private function restore_ollama_host(): void {
-		if ( false === $this->original_ollama_host ) {
-			putenv( 'OLLAMA_HOST' );
+	private function restore_vllm_host(): void {
+		if ( false === $this->original_vllm_host ) {
+			putenv( 'VLLM_HOST' );
 		} else {
-			putenv( 'OLLAMA_HOST=' . $this->original_ollama_host );
+			putenv( 'VLLM_HOST=' . $this->original_vllm_host );
 		}
 	}
 
@@ -116,7 +116,7 @@ class PluginTest extends \WP_UnitTestCase {
 		$this->plugin->init();
 		$this->assertNotFalse(
 			has_filter(
-				'plugin_action_links_' . plugin_basename( AI_PROVIDER_FOR_OLLAMA_PLUGIN_FILE ),
+				'plugin_action_links_' . plugin_basename( AI_PROVIDER_FOR_VLLM_PLUGIN_FILE ),
 				array( $this->plugin, 'plugin_action_links' )
 			)
 		);
@@ -128,7 +128,7 @@ class PluginTest extends \WP_UnitTestCase {
 	public function test_init_registers_http_filters(): void {
 		$this->plugin->init();
 		$this->assertNotFalse( has_filter( 'http_request_host_is_external', array( $this->plugin, 'allow_localhost_requests' ) ) );
-		$this->assertNotFalse( has_filter( 'http_allowed_safe_ports', array( $this->plugin, 'allow_ollama_ports' ) ) );
+		$this->assertNotFalse( has_filter( 'http_allowed_safe_ports', array( $this->plugin, 'allow_vllm_ports' ) ) );
 	}
 
 	// -----------------------------------------------------------------------
@@ -136,36 +136,36 @@ class PluginTest extends \WP_UnitTestCase {
 	// -----------------------------------------------------------------------
 
 	/**
-	 * Tests that register_provider() registers the ollama provider with the registry.
+	 * Tests that register_provider() registers the vllm provider with the registry.
 	 */
-	public function test_register_provider_registers_ollama_with_registry(): void {
+	public function test_register_provider_registers_vllm_with_registry(): void {
 		$this->reset_registry();
 		$this->plugin->register_provider();
-		$this->assertTrue( AiClient::defaultRegistry()->hasProvider( 'ollama' ) );
+		$this->assertTrue( AiClient::defaultRegistry()->hasProvider( 'vllm' ) );
 	}
 
 	/**
-	 * Tests that register_provider() sets OLLAMA_HOST from the WordPress option when not already set.
+	 * Tests that register_provider() sets VLLM_HOST from the WordPress option when not already set.
 	 */
 	public function test_register_provider_sets_env_var_from_option(): void {
-		update_option( 'ai_provider_for_ollama_settings', array( 'host' => 'http://my-server:11434' ) );
-		putenv( 'OLLAMA_HOST=' );
+		update_option( 'ai_provider_for_vllm_settings', array( 'host' => 'http://my-server:8000' ) );
+		putenv( 'VLLM_HOST=' );
 
 		$this->plugin->register_provider();
 
-		$this->assertSame( 'http://my-server:11434', getenv( 'OLLAMA_HOST' ) );
+		$this->assertSame( 'http://my-server:8000', getenv( 'VLLM_HOST' ) );
 	}
 
 	/**
-	 * Tests that register_provider() does not override an already-set OLLAMA_HOST env var.
+	 * Tests that register_provider() does not override an already-set VLLM_HOST env var.
 	 */
 	public function test_register_provider_does_not_override_existing_env_var(): void {
-		putenv( 'OLLAMA_HOST=http://existing:11434' );
-		update_option( 'ai_provider_for_ollama_settings', array( 'host' => 'http://different:11434' ) );
+		putenv( 'VLLM_HOST=http://existing:8000' );
+		update_option( 'ai_provider_for_vllm_settings', array( 'host' => 'http://different:8000' ) );
 
 		$this->plugin->register_provider();
 
-		$this->assertSame( 'http://existing:11434', getenv( 'OLLAMA_HOST' ) );
+		$this->assertSame( 'http://existing:8000', getenv( 'VLLM_HOST' ) );
 	}
 
 	/**
@@ -175,7 +175,7 @@ class PluginTest extends \WP_UnitTestCase {
 		$this->reset_registry();
 		$this->plugin->register_provider();
 		$this->plugin->register_provider(); // Second call should be a no-op.
-		$this->assertTrue( AiClient::defaultRegistry()->hasProvider( 'ollama' ) );
+		$this->assertTrue( AiClient::defaultRegistry()->hasProvider( 'vllm' ) );
 	}
 
 	// -----------------------------------------------------------------------
@@ -185,13 +185,13 @@ class PluginTest extends \WP_UnitTestCase {
 	/**
 	 * Tests that register_fallback_auth() sets an empty API key when no auth is configured yet.
 	 */
-	public function test_register_fallback_auth_sets_empty_api_key_for_local_ollama(): void {
+	public function test_register_fallback_auth_sets_empty_api_key_for_local_vllm(): void {
 		$this->reset_registry();
 		$this->plugin->register_provider();
 
-		// Confirm no auth is set yet (registry did not find OLLAMA_API_KEY env var).
+		// Confirm no auth is set yet (registry did not find VLLM_API_KEY env var).
 		$registry = AiClient::defaultRegistry();
-		$auth      = $registry->getProviderRequestAuthentication( 'ollama' );
+		$auth = $registry->getProviderRequestAuthentication( 'vllm' );
 		if ( null !== $auth ) {
 			// If default auth was already set by the registry, skip this test gracefully.
 			$this->markTestSkipped( 'Registry already set default auth; cannot test fallback.' );
@@ -199,7 +199,7 @@ class PluginTest extends \WP_UnitTestCase {
 
 		$this->plugin->register_fallback_auth();
 
-		$auth = $registry->getProviderRequestAuthentication( 'ollama' );
+		$auth = $registry->getProviderRequestAuthentication( 'vllm' );
 		$this->assertInstanceOf( ApiKeyRequestAuthentication::class, $auth );
 	}
 
@@ -212,11 +212,11 @@ class PluginTest extends \WP_UnitTestCase {
 
 		$registry = AiClient::defaultRegistry();
 		$real_auth = new ApiKeyRequestAuthentication( 'real-api-key' );
-		$registry->setProviderRequestAuthentication( 'ollama', $real_auth );
+		$registry->setProviderRequestAuthentication( 'vllm', $real_auth );
 
 		$this->plugin->register_fallback_auth();
 
-		$auth = $registry->getProviderRequestAuthentication( 'ollama' );
+		$auth = $registry->getProviderRequestAuthentication( 'vllm' );
 		$this->assertInstanceOf( ApiKeyRequestAuthentication::class, $auth );
 		$this->assertSame( $real_auth, $auth );
 	}
@@ -229,15 +229,15 @@ class PluginTest extends \WP_UnitTestCase {
 		$result = $this->plugin->plugin_action_links( $links );
 
 		$this->assertCount( 2, $result );
-		$this->assertStringContainsString( 'options-general.php?page=ai-provider-for-ollama', $result[0] );
+		$this->assertStringContainsString( 'options-general.php?page=ai-provider-for-vllm', $result[0] );
 	}
 
 	/**
-	 * Tests that allow_localhost_requests returns true for Ollama host URLs.
+	 * Tests that allow_localhost_requests returns true for vLLM host URLs.
 	 */
-	public function test_allow_localhost_requests_returns_true_for_ollama_host(): void {
-		putenv( 'OLLAMA_HOST=http://localhost:11434' );
-		$result = $this->plugin->allow_localhost_requests( false, 'localhost', 'http://localhost:11434/api/tags' );
+	public function test_allow_localhost_requests_returns_true_for_vllm_host(): void {
+		putenv( 'VLLM_HOST=http://localhost:8000' );
+		$result = $this->plugin->allow_localhost_requests( false, 'localhost', 'http://localhost:8000/v1/models' );
 
 		$this->assertTrue( $result );
 	}
@@ -246,28 +246,28 @@ class PluginTest extends \WP_UnitTestCase {
 	 * Tests that allow_localhost_requests keeps the original value for other URLs.
 	 */
 	public function test_allow_localhost_requests_returns_original_for_other_hosts(): void {
-		putenv( 'OLLAMA_HOST=http://localhost:11434' );
+		putenv( 'VLLM_HOST=http://localhost:8000' );
 		$result = $this->plugin->allow_localhost_requests( false, 'example.com', 'https://example.com/api' );
 
 		$this->assertFalse( $result );
 	}
 
 	/**
-	 * Tests that allow_ollama_ports appends the configured Ollama port.
+	 * Tests that allow_vllm_ports appends the configured vLLM port.
 	 */
-	public function test_allow_ollama_ports_appends_configured_port(): void {
-		putenv( 'OLLAMA_HOST=http://localhost:11434' );
-		$ports = $this->plugin->allow_ollama_ports( array( 80, 443 ) );
+	public function test_allow_vllm_ports_appends_configured_port(): void {
+		putenv( 'VLLM_HOST=http://localhost:8000' );
+		$ports = $this->plugin->allow_vllm_ports( array( 80, 443 ) );
 
-		$this->assertContains( 11434, $ports );
+		$this->assertContains( 8000, $ports );
 	}
 
 	/**
-	 * Tests that allow_ollama_ports keeps ports unchanged when host has no port.
+	 * Tests that allow_vllm_ports keeps ports unchanged when host has no port.
 	 */
-	public function test_allow_ollama_ports_keeps_ports_when_no_host_port(): void {
-		putenv( 'OLLAMA_HOST=http://localhost' );
-		$ports = $this->plugin->allow_ollama_ports( array( 80, 443 ) );
+	public function test_allow_vllm_ports_keeps_ports_when_no_host_port(): void {
+		putenv( 'VLLM_HOST=http://localhost' );
+		$ports = $this->plugin->allow_vllm_ports( array( 80, 443 ) );
 
 		$this->assertSame( array( 80, 443 ), $ports );
 	}

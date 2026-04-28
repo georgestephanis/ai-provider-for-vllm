@@ -2,9 +2,9 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForOllama\Tests\Integration\Settings;
+namespace GeorgeStephanis\AiProviderForVllm\Tests\Integration\Settings;
 
-use Fueled\AiProviderForOllama\Settings\OllamaSettings;
+use GeorgeStephanis\AiProviderForVllm\Settings\VllmSettings;
 use WordPress\AiClient\AiClient;
 use WordPress\AiClient\Common\Exception\InvalidArgumentException;
 use WordPress\AiClient\Providers\Contracts\ModelMetadataDirectoryInterface;
@@ -18,24 +18,24 @@ use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
 use WordPress\AiClient\Providers\Models\Enums\CapabilityEnum;
 
 /**
- * Tests for OllamaSettings.
+ * Tests for VllmSettings.
  *
- * @covers \Fueled\AiProviderForOllama\Settings\OllamaSettings
+ * @covers \GeorgeStephanis\AiProviderForVllm\Settings\VllmSettings
  */
-class OllamaSettingsTest extends \WP_UnitTestCase {
+class VllmSettingsTest extends \WP_UnitTestCase {
 
 	/**
 	 * Settings instance under test.
 	 *
-	 * @var OllamaSettings
+	 * @var VllmSettings
 	 */
-	private OllamaSettings $settings;
+	private VllmSettings $settings;
 
 	protected function setUp(): void {
 		parent::setUp();
 		$this->reset_registry();
 		$this->reset_mock_provider_state();
-		$this->settings = new OllamaSettings();
+		$this->settings = new VllmSettings();
 	}
 
 	protected function tearDown(): void {
@@ -58,16 +58,16 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 	 * Resets all mutable static state used by mock provider test doubles.
 	 */
 	private function reset_mock_provider_state(): void {
-		MockOllamaProviderAvailability::$is_configured = true;
-		MockOllamaModelMetadataDirectory::$throw_on_list = false;
-		MockOllamaModelMetadataDirectory::$models        = array();
+		MockVllmProviderAvailability::$is_configured = true;
+		MockVllmModelMetadataDirectory::$throw_on_list = false;
+		MockVllmModelMetadataDirectory::$models        = array();
 	}
 
 	/**
-	 * Registers the mock ollama provider in the default registry.
+	 * Registers the mock vllm provider in the default registry.
 	 */
 	private function register_mock_provider(): void {
-		AiClient::defaultRegistry()->registerProvider( MockOllamaProvider::class );
+		AiClient::defaultRegistry()->registerProvider( MockVllmProvider::class );
 	}
 
 	/**
@@ -75,10 +75,10 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 	 *
 	 * @param string $id Model identifier.
 	 */
-	private function create_mock_model_metadata( string $id = 'llama3.1' ): ModelMetadata {
+	private function create_mock_model_metadata( string $id = 'qwen3-14b' ): ModelMetadata {
 		return new ModelMetadata(
 			$id,
-			'Ollama Test Model',
+			'vLLM Test Model',
 			array( CapabilityEnum::textGeneration() ),
 			array()
 		);
@@ -92,16 +92,16 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 	 * Tests that a valid host URL is returned unchanged.
 	 */
 	public function test_sanitize_settings_with_valid_host_url(): void {
-		$result = $this->settings->sanitize_settings( array( 'host' => 'http://localhost:11434' ) );
-		$this->assertSame( array( 'host' => 'http://localhost:11434' ), $result );
+		$result = $this->settings->sanitize_settings( array( 'host' => 'http://localhost:8000' ) );
+		$this->assertSame( array( 'host' => 'http://localhost:8000' ), $result );
 	}
 
 	/**
 	 * Tests that a trailing slash is stripped from the host URL.
 	 */
 	public function test_sanitize_settings_strips_trailing_slash(): void {
-		$result = $this->settings->sanitize_settings( array( 'host' => 'http://localhost:11434/' ) );
-		$this->assertSame( 'http://localhost:11434', $result['host'] );
+		$result = $this->settings->sanitize_settings( array( 'host' => 'http://localhost:8000/' ) );
+		$this->assertSame( 'http://localhost:8000', $result['host'] );
 	}
 
 	/**
@@ -133,7 +133,7 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 	 * Tests that the host value is passed through esc_url_raw() for sanitization.
 	 */
 	public function test_sanitize_settings_sanitizes_url(): void {
-		$input  = 'http://localhost:11434/path?q=1';
+		$input  = 'http://localhost:8000/path?q=1';
 		$result = $this->settings->sanitize_settings( array( 'host' => $input ) );
 		// esc_url_raw returns a sanitized URL; the result must be a non-empty string.
 		$this->assertIsString( $result['host'] );
@@ -173,7 +173,7 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 		$this->settings->init();
 		$this->assertNotFalse(
 			has_action(
-				'wp_ajax_ai_provider_for_ollama_list_models',
+				'wp_ajax_ai_provider_for_vllm_list_models',
 				array( $this->settings, 'ajax_list_models' )
 			)
 		);
@@ -204,7 +204,7 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 	 * Tests that get_models() returns an error if provider availability is unconfigured.
 	 */
 	public function test_get_models_returns_error_when_provider_is_not_configured(): void {
-		MockOllamaProviderAvailability::$is_configured = false;
+		MockVllmProviderAvailability::$is_configured = false;
 		$this->register_mock_provider();
 
 		$result = $this->settings->get_models();
@@ -220,7 +220,7 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 	public function test_get_models_returns_models_when_provider_is_configured(): void {
 		$this->register_mock_provider();
 		$model = $this->create_mock_model_metadata();
-		MockOllamaModelMetadataDirectory::$models = array( $model );
+		MockVllmModelMetadataDirectory::$models = array( $model );
 
 		$result = $this->settings->get_models();
 
@@ -235,7 +235,7 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 	 */
 	public function test_get_models_returns_error_when_model_listing_throws(): void {
 		$this->register_mock_provider();
-		MockOllamaModelMetadataDirectory::$throw_on_list = true;
+		MockVllmModelMetadataDirectory::$throw_on_list = true;
 
 		$result = $this->settings->get_models();
 
@@ -257,7 +257,7 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 	 */
 	public function test_is_connected_returns_true_when_get_models_succeeds(): void {
 		$this->register_mock_provider();
-		MockOllamaModelMetadataDirectory::$models = array( $this->create_mock_model_metadata() );
+		MockVllmModelMetadataDirectory::$models = array( $this->create_mock_model_metadata() );
 
 		$this->assertTrue( $this->settings->is_connected() );
 	}
@@ -279,7 +279,7 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 	public function test_wpai_has_ai_credentials_filter_returns_true_when_connected(): void {
 		$this->settings->init();
 		$this->register_mock_provider();
-		MockOllamaModelMetadataDirectory::$models = array( $this->create_mock_model_metadata() );
+		MockVllmModelMetadataDirectory::$models = array( $this->create_mock_model_metadata() );
 
 		$result = apply_filters( 'wpai_has_ai_credentials', false );
 
@@ -288,17 +288,17 @@ class OllamaSettingsTest extends \WP_UnitTestCase {
 }
 
 /**
- * Mock provider for testing OllamaSettings::get_models() behavior.
+ * Mock provider for testing VllmSettings::get_models() behavior.
  */
-class MockOllamaProvider implements ProviderInterface {
+class MockVllmProvider implements ProviderInterface {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public static function metadata(): ProviderMetadata {
 		return new ProviderMetadata(
-			'ollama',
-			'Mock Ollama',
+			'vllm',
+			'Mock vLLM',
 			ProviderTypeEnum::server()
 		);
 	}
@@ -314,21 +314,21 @@ class MockOllamaProvider implements ProviderInterface {
 	 * {@inheritDoc}
 	 */
 	public static function availability(): ProviderAvailabilityInterface {
-		return new MockOllamaProviderAvailability();
+		return new MockVllmProviderAvailability();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public static function modelMetadataDirectory(): ModelMetadataDirectoryInterface {
-		return new MockOllamaModelMetadataDirectory();
+		return new MockVllmModelMetadataDirectory();
 	}
 }
 
 /**
- * Mock provider availability used by MockOllamaProvider.
+ * Mock provider availability used by MockVllmProvider.
  */
-class MockOllamaProviderAvailability implements ProviderAvailabilityInterface {
+class MockVllmProviderAvailability implements ProviderAvailabilityInterface {
 
 	/**
 	 * Whether the provider should report as configured.
@@ -346,9 +346,9 @@ class MockOllamaProviderAvailability implements ProviderAvailabilityInterface {
 }
 
 /**
- * Mock model metadata directory used by MockOllamaProvider.
+ * Mock model metadata directory used by MockVllmProvider.
  */
-class MockOllamaModelMetadataDirectory implements ModelMetadataDirectoryInterface {
+class MockVllmModelMetadataDirectory implements ModelMetadataDirectoryInterface {
 
 	/**
 	 * Whether listModelMetadata should throw.

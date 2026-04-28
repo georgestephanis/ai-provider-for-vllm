@@ -2,7 +2,7 @@
 /**
  * Bootstrap the PHPUnit tests.
  *
- * @package Fueled\AiProviderForOllama\Tests
+ * @package GeorgeStephanis\AiProviderForVllm\Tests
  */
 
 define( 'TESTS_REPO_ROOT_DIR', dirname( __DIR__ ) );

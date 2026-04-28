@@ -2,16 +2,16 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForOllama\Tests\Integration\Models;
+namespace GeorgeStephanis\AiProviderForVllm\Tests\Integration\Models;
 
-use Fueled\AiProviderForOllama\Models\OllamaTextGenerationModel;
+use GeorgeStephanis\AiProviderForVllm\Models\VllmTextGenerationModel;
 use WordPress\AiClient\Providers\Http\DTO\Request;
 use WordPress\AiClient\Providers\Http\Enums\HttpMethodEnum;
 
 /**
  * Test double that exposes the protected createRequest() method for path-normalization tests.
  */
-class MockOllamaTextGenerationModel extends OllamaTextGenerationModel {
+class MockVllmTextGenerationModel extends VllmTextGenerationModel {
 
 	/**
 	 * Publicly exposes the protected createRequest() method.

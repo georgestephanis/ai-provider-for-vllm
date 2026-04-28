@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForOllama\Tests\Integration\Mocks;
+namespace GeorgeStephanis\AiProviderForVllm\Tests\Integration\Mocks;
 
 use WordPress\AiClient\Providers\Http\Contracts\HttpTransporterInterface;
 use WordPress\AiClient\Providers\Http\DTO\Request;
@@ -13,8 +13,7 @@ use WordPress\AiClient\Providers\Http\DTO\Response;
  * Mock HTTP transporter for testing.
  *
  * Supports both a single configurable response and a FIFO queue of responses
- * for multi-call scenarios (e.g. MetadataDirectory tests that call /api/tags
- * then /api/show per model).
+ * for multi-call scenarios.
  */
 class MockHttpTransporter implements HttpTransporterInterface {
 
