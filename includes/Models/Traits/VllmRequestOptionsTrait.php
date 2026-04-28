@@ -1,32 +1,32 @@
 <?php
 /**
- * Shared Ollama request options preparation.
+ * vLLM request options trait.
  *
- * @package Fueled\AiProviderForOllama\Models\Traits
- * @since   1.1.0
+ * @package Fueled\AiProviderForVllm\Models\Traits
+ * @since   1.0.0
  */
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForOllama\Models\Traits;
+namespace Fueled\AiProviderForVllm\Models\Traits;
 
 use WordPress\AiClient\Providers\Http\DTO\RequestOptions;
 
 /**
  * Trait for preparing request options with configurable timeout defaults.
  *
- * @since 1.1.0
+ * @since 1.0.0
  */
-trait OllamaRequestOptionsTrait {
+trait VllmRequestOptionsTrait {
 
 	/**
 	 * Prepares request options with timeout defaults and custom overrides.
 	 *
 	 * Supported custom options:
-	 *  - ollama.request_timeout (seconds)
-	 *  - ollama.connect_timeout (seconds)
+	 *  - vllm.request_timeout (seconds)
+	 *  - vllm.connect_timeout (seconds)
 	 *
-	 * @since 1.1.0
+	 * @since 1.0.0
 	 *
 	 * @param float $default_request_timeout Default request timeout in seconds.
 	 * @param float $default_connect_timeout Default connect timeout in seconds.
@@ -47,13 +47,13 @@ trait OllamaRequestOptionsTrait {
 		$custom_options = $this->getConfig()->getCustomOptions();
 
 		$request_timeout = $default_request_timeout;
-		if ( isset( $custom_options['ollama.request_timeout'] ) && is_numeric( $custom_options['ollama.request_timeout'] ) ) {
-			$request_timeout = (float) $custom_options['ollama.request_timeout'];
+		if ( isset( $custom_options['vllm.request_timeout'] ) && is_numeric( $custom_options['vllm.request_timeout'] ) ) {
+			$request_timeout = (float) $custom_options['vllm.request_timeout'];
 		}
 
 		$connect_timeout = $default_connect_timeout;
-		if ( isset( $custom_options['ollama.connect_timeout'] ) && is_numeric( $custom_options['ollama.connect_timeout'] ) ) {
-			$connect_timeout = (float) $custom_options['ollama.connect_timeout'];
+		if ( isset( $custom_options['vllm.connect_timeout'] ) && is_numeric( $custom_options['vllm.connect_timeout'] ) ) {
+			$connect_timeout = (float) $custom_options['vllm.connect_timeout'];
 		}
 
 		$request_options->setTimeout( $request_timeout );

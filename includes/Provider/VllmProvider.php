@@ -2,11 +2,10 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForOllama\Provider;
+namespace Fueled\AiProviderForVllm\Provider;
 
-use Fueled\AiProviderForOllama\Metadata\OllamaModelMetadataDirectory;
-use Fueled\AiProviderForOllama\Models\OllamaImageGenerationModel;
-use Fueled\AiProviderForOllama\Models\OllamaTextGenerationModel;
+use Fueled\AiProviderForVllm\Metadata\VllmModelMetadataDirectory;
+use Fueled\AiProviderForVllm\Models\VllmTextGenerationModel;
 use WordPress\AiClient\AiClient;
 use WordPress\AiClient\Common\Exception\RuntimeException;
 use WordPress\AiClient\Providers\ApiBasedImplementation\AbstractApiProvider;
@@ -20,11 +19,11 @@ use WordPress\AiClient\Providers\Models\Contracts\ModelInterface;
 use WordPress\AiClient\Providers\Models\DTO\ModelMetadata;
 
 /**
- * Class for the Ollama provider.
+ * Class for the vLLM provider.
  *
  * @since 1.0.0
  */
-class OllamaProvider extends AbstractApiProvider {
+class VllmProvider extends AbstractApiProvider {
 
 	/**
 	 * {@inheritDoc}
@@ -32,12 +31,12 @@ class OllamaProvider extends AbstractApiProvider {
 	 * @since 1.0.0
 	 */
 	protected static function baseUrl(): string {
-		$host = getenv( 'OLLAMA_HOST' );
+		$host = getenv( 'VLLM_HOST' );
 		if ( false !== $host && '' !== $host ) {
 			return rtrim( $host, '/' );
 		}
 
-		return 'http://localhost:11434';
+		return 'http://localhost:8000';
 	}
 
 	/**
@@ -50,16 +49,10 @@ class OllamaProvider extends AbstractApiProvider {
 		ProviderMetadata $provider_metadata
 	): ModelInterface {
 
-		$capabilities_string_list = $model_metadata->toArray()[ ModelMetadata::KEY_SUPPORTED_CAPABILITIES ];
-
-		if ( in_array( 'image_generation', $capabilities_string_list, true ) ) {
-			return new OllamaImageGenerationModel( $model_metadata, $provider_metadata );
-		}
-
 		$capabilities = $model_metadata->getSupportedCapabilities();
 		foreach ( $capabilities as $capability ) {
 			if ( $capability->isTextGeneration() ) {
-				return new OllamaTextGenerationModel( $model_metadata, $provider_metadata );
+				return new VllmTextGenerationModel( $model_metadata, $provider_metadata );
 			}
 		}
 
@@ -76,25 +69,28 @@ class OllamaProvider extends AbstractApiProvider {
 	 */
 	protected static function createProviderMetadata(): ProviderMetadata {
 		$provider_meta = array(
-			'ollama',
-			'Ollama',
+			'vllm',
+			'vLLM',
 			ProviderTypeEnum::cloud(),
-			'https://ollama.com/settings/keys',
+			'https://docs.vllm.ai/',
 			RequestAuthenticationMethod::apiKey(),
 		);
 
 		// Provider description support was added in 1.2.0.
 		if ( version_compare( AiClient::VERSION, '1.2.0', '>=' ) ) {
 			if ( function_exists( '__' ) ) {
-				$provider_meta[] = __( 'Text generation with Ollama, either running locally or on Ollama Cloud.', 'ai-provider-for-ollama' );
+				$provider_meta[] = __( 'Text generation with vLLM, a fast and easy-to-use LLM inference and serving engine.', 'ai-provider-for-vllm' );
 			} else {
-				$provider_meta[] = 'Text generation with Ollama, either running locally or on Ollama Cloud.';
+				$provider_meta[] = 'Text generation with vLLM, a fast and easy-to-use LLM inference and serving engine.';
 			}
 		}
 
 		// Provider logo path support was added in 1.3.0.
 		if ( version_compare( AiClient::VERSION, '1.3.0', '>=' ) ) {
-			$provider_meta[] = __DIR__ . '/logo.svg';
+			$logo = __DIR__ . '/logo.svg';
+			if ( file_exists( $logo ) ) {
+				$provider_meta[] = $logo;
+			}
 		}
 
 		return new ProviderMetadata( ...$provider_meta );
@@ -118,6 +114,6 @@ class OllamaProvider extends AbstractApiProvider {
 	 * @since 1.0.0
 	 */
 	protected static function createModelMetadataDirectory(): ModelMetadataDirectoryInterface {
-		return new OllamaModelMetadataDirectory();
+		return new VllmModelMetadataDirectory();
 	}
 }

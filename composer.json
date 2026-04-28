@@ -1,10 +1,10 @@
 {
-    "name": "fueled/ai-provider-for-ollama",
-    "description": "Ollama provider for the PHP AI Client SDK. Works as both a Composer package and WordPress plugin.",
+    "name": "fueled/ai-provider-for-vllm",
+    "description": "vLLM provider for the PHP AI Client SDK. Works as both a Composer package and WordPress plugin.",
     "license": "GPL-2.0-or-later",
     "keywords": [
         "ai",
-        "ollama",
+        "vllm",
         "llm",
         "wordpress",
         "local-ai"
@@ -15,10 +15,10 @@
             "homepage": "https://fueled.com"
         }
     ],
-    "homepage": "https://github.com/fueled/ai-provider-for-ollama",
+    "homepage": "https://github.com/fueled/ai-provider-for-vllm",
     "support": {
-        "issues": "https://github.com/fueled/ai-provider-for-ollama/issues",
-        "source": "https://github.com/fueled/ai-provider-for-ollama"
+        "issues": "https://github.com/fueled/ai-provider-for-vllm/issues",
+        "source": "https://github.com/fueled/ai-provider-for-vllm"
     },
     "require": {
         "php": ">=7.4"
@@ -44,7 +44,7 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Fueled\\AiProviderForOllama\\": "includes/"
+            "Fueled\\AiProviderForVllm\\": "includes/"
         }
     },
     "config": {

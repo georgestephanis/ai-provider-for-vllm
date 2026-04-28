@@ -8,14 +8,14 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForOllama;
+namespace Fueled\AiProviderForVllm;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use Fueled\AiProviderForOllama\Provider\OllamaProvider;
-use Fueled\AiProviderForOllama\Settings\OllamaSettings;
+use Fueled\AiProviderForVllm\Provider\VllmProvider;
+use Fueled\AiProviderForVllm\Settings\VllmSettings;
 use WordPress\AiClient\AiClient;
 use WordPress\AiClient\Providers\Http\DTO\ApiKeyRequestAuthentication;
 
@@ -35,52 +35,52 @@ class Plugin {
 		add_action( 'init', array( $this, 'register_provider' ), 5 );
 		add_action( 'init', array( $this, 'register_fallback_auth' ), 15 );
 		add_action( 'init', array( $this, 'initialize_settings' ) );
-		add_filter( 'plugin_action_links_' . plugin_basename( AI_PROVIDER_FOR_OLLAMA_PLUGIN_FILE ), array( $this, 'plugin_action_links' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( AI_PROVIDER_FOR_VLLM_PLUGIN_FILE ), array( $this, 'plugin_action_links' ) );
 		add_filter( 'http_request_host_is_external', array( $this, 'allow_localhost_requests' ), 10, 3 );
-		add_filter( 'http_allowed_safe_ports', array( $this, 'allow_ollama_ports' ) );
+		add_filter( 'http_allowed_safe_ports', array( $this, 'allow_vllm_ports' ) );
 	}
 
 	/**
-	 * Gets the Ollama host.
+	 * Gets the vLLM host.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string The Ollama host.
+	 * @return string The vLLM host.
 	 */
-	private function get_ollama_host(): string {
-		// Get the OLLAMA_HOST environment variable if set.
-		$host = getenv( 'OLLAMA_HOST' );
+	private function get_vllm_host(): string {
+		// Get the VLLM_HOST environment variable if set.
+		$host = getenv( 'VLLM_HOST' );
 		if ( false !== $host && '' !== $host ) {
 			return $host;
 		}
 
-		// Get the Ollama host from the WordPress option if set.
-		$settings = OllamaSettings::get_settings();
+		// Get the vLLM host from the WordPress option if set.
+		$settings = VllmSettings::get_settings();
 		if ( isset( $settings['host'] ) && '' !== $settings['host'] ) {
 			return $settings['host'];
 		}
 
-		return 'http://localhost:11434';
+		return 'http://localhost:8000';
 	}
 
 	/**
-	 * Sets the OLLAMA_HOST environment variable.
+	 * Sets the VLLM_HOST environment variable.
 	 *
 	 * @since 1.0.0
 	 */
-	private function set_ollama_host(): void {
-		$host = $this->get_ollama_host();
+	private function set_vllm_host(): void {
+		$host = $this->get_vllm_host();
 
 		if ( '' === $host ) {
 			return;
 		}
 
-		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv -- Required to set OLLAMA_HOST for the provider SDK.
-		putenv( 'OLLAMA_HOST=' . $host );
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv -- Required to set VLLM_HOST for the provider SDK.
+		putenv( 'VLLM_HOST=' . $host );
 	}
 
 	/**
-	 * Registers the Ollama provider with the AI Client.
+	 * Registers the vLLM provider with the AI Client.
 	 *
 	 * @since 1.0.0
 	 */
@@ -89,22 +89,22 @@ class Plugin {
 			return;
 		}
 
-		$this->set_ollama_host();
+		$this->set_vllm_host();
 
 		$registry = AiClient::defaultRegistry();
 
-		if ( $registry->hasProvider( OllamaProvider::class ) ) {
+		if ( $registry->hasProvider( VllmProvider::class ) ) {
 			return;
 		}
 
-		$registry->registerProvider( OllamaProvider::class );
+		$registry->registerProvider( VllmProvider::class );
 	}
 
 	/**
-	 * Registers fallback authentication for the Ollama provider.
+	 * Registers fallback authentication for the vLLM provider.
 	 *
 	 * If no API key was provided via wp-ai-client (which passes credentials at priority 10),
-	 * this registers an empty API key so that local Ollama instances work without configuration.
+	 * this registers an empty API key so that local vLLM instances work without configuration.
 	 *
 	 * @since 1.0.0
 	 */
@@ -115,29 +115,29 @@ class Plugin {
 
 		$registry = AiClient::defaultRegistry();
 
-		if ( ! $registry->hasProvider( 'ollama' ) ) {
+		if ( ! $registry->hasProvider( 'vllm' ) ) {
 			return;
 		}
 
 		// Only set fallback if no authentication has been configured yet.
-		$auth = $registry->getProviderRequestAuthentication( 'ollama' );
+		$auth = $registry->getProviderRequestAuthentication( 'vllm' );
 		if ( null !== $auth ) {
 			return;
 		}
 
 		$registry->setProviderRequestAuthentication(
-			'ollama',
+			'vllm',
 			new ApiKeyRequestAuthentication( '' )
 		);
 	}
 
 	/**
-	 * Initializes the Ollama settings.
+	 * Initializes the vLLM settings.
 	 *
 	 * @since 1.0.0
 	 */
 	public function initialize_settings(): void {
-		$settings = new OllamaSettings();
+		$settings = new VllmSettings();
 		$settings->init();
 	}
 
@@ -155,8 +155,8 @@ class Plugin {
 	public function plugin_action_links( array $links ): array {
 		$settings_link = sprintf(
 			'<a href="%1$s">%2$s</a>',
-			admin_url( 'options-general.php?page=ai-provider-for-ollama' ),
-			esc_html__( 'Settings', 'ai-provider-for-ollama' )
+			admin_url( 'options-general.php?page=ai-provider-for-vllm' ),
+			esc_html__( 'Settings', 'ai-provider-for-vllm' )
 		);
 
 		array_unshift( $links, $settings_link );
@@ -165,7 +165,7 @@ class Plugin {
 	}
 
 	/**
-	 * Allows localhost requests to the Ollama host.
+	 * Allows localhost requests to the vLLM host.
 	 *
 	 * @since 1.0.0
 	 *
@@ -175,7 +175,7 @@ class Plugin {
 	 * @return bool Whether the request is allowed.
 	 */
 	public function allow_localhost_requests( $external, $host, $url ): bool {
-		if ( strpos( $url, $this->get_ollama_host() ) !== false ) {
+		if ( strpos( $url, $this->get_vllm_host() ) !== false ) {
 			return true;
 		}
 
@@ -183,21 +183,21 @@ class Plugin {
 	}
 
 	/**
-	 * Allows Ollama ports.
+	 * Allows vLLM ports.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param array<int> $ports The ports.
 	 * @return array<int> The allowed ports.
 	 */
-	public function allow_ollama_ports( $ports ): array {
-		$ollama_host = $this->get_ollama_host();
-		$ollama_port = wp_parse_url( $ollama_host, PHP_URL_PORT );
+	public function allow_vllm_ports( $ports ): array {
+		$vllm_host = $this->get_vllm_host();
+		$vllm_port = wp_parse_url( $vllm_host, PHP_URL_PORT );
 
-		if ( ! $ollama_port ) {
+		if ( ! $vllm_port ) {
 			return $ports;
 		}
 
-		return array_merge( $ports, array( $ollama_port ) );
+		return array_merge( $ports, array( $vllm_port ) );
 	}
 }

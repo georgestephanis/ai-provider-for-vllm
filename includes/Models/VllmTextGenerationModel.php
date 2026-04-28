@@ -2,32 +2,30 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForOllama\Models;
+namespace Fueled\AiProviderForVllm\Models;
 
-use Fueled\AiProviderForOllama\Models\Traits\OllamaRequestOptionsTrait;
-use Fueled\AiProviderForOllama\Provider\OllamaProvider;
+use Fueled\AiProviderForVllm\Models\Traits\VllmRequestOptionsTrait;
+use Fueled\AiProviderForVllm\Provider\VllmProvider;
 use WordPress\AiClient\Providers\Http\DTO\Request;
 use WordPress\AiClient\Providers\Http\DTO\RequestOptions;
 use WordPress\AiClient\Providers\Http\Enums\HttpMethodEnum;
 use WordPress\AiClient\Providers\OpenAiCompatibleImplementation\AbstractOpenAiCompatibleTextGenerationModel;
 
 /**
- * Class for an Ollama text generation model using the OpenAI-compatible chat completions API.
- *
- * TODO: Could look to use the native API instead of the OpenAI-compatible API.
+ * Class for a vLLM text generation model using the OpenAI-compatible chat completions API.
  *
  * @since 1.0.0
  */
-class OllamaTextGenerationModel extends AbstractOpenAiCompatibleTextGenerationModel {
-	use OllamaRequestOptionsTrait;
+class VllmTextGenerationModel extends AbstractOpenAiCompatibleTextGenerationModel {
+	use VllmRequestOptionsTrait;
 
 	/**
-	 * Prepares the response format parameter for Ollama's OpenAI-compatible API.
+	 * Prepares the response format parameter for vLLM's OpenAI-compatible API.
 	 *
-	 * Ollama's OpenAI-compatible API uses the same response_format key as OpenAI,
-	 * but schema mode expects the schema to be nested at json_schema.schema.
+	 * vLLM's OpenAI-compatible API uses the same response_format key as OpenAI,
+	 * with the schema nested at json_schema.schema for structured output.
 	 *
-	 * @since 1.1.0
+	 * @since 1.0.0
 	 *
 	 * @param array<string, mixed>|null $output_schema The output schema.
 	 * @return array<string, mixed> The prepared response format parameter.
@@ -63,16 +61,16 @@ class OllamaTextGenerationModel extends AbstractOpenAiCompatibleTextGenerationMo
 
 		// Keep transport-only timeout options out of the OpenAI-compatible payload.
 		if ( is_array( $data ) ) {
-			unset( $data['ollama.request_timeout'], $data['ollama.connect_timeout'] );
+			unset( $data['vllm.request_timeout'], $data['vllm.connect_timeout'] );
 		}
 
-		// Ollama supports OpenAI-compatible endpoints at /v1/.
+		// Ensure the path uses the /v1/ prefix for OpenAI-compatible endpoints.
 		$path = ltrim( (string) preg_replace( '#^v1/?#', '', ltrim( $path, '/' ) ), '/' );
 		$path = '/v1/' . $path;
 
 		return new Request(
 			$method,
-			OllamaProvider::url( $path ),
+			VllmProvider::url( $path ),
 			$headers,
 			$data,
 			$request_options
@@ -83,10 +81,10 @@ class OllamaTextGenerationModel extends AbstractOpenAiCompatibleTextGenerationMo
 	 * Prepares request options for text generation with a longer default timeout.
 	 *
 	 * Supported custom options:
-	 *  - ollama.request_timeout (seconds)
-	 *  - ollama.connect_timeout (seconds)
+	 *  - vllm.request_timeout (seconds)
+	 *  - vllm.connect_timeout (seconds)
 	 *
-	 * @since 1.1.0
+	 * @since 1.0.0
 	 *
 	 * @return \WordPress\AiClient\Providers\Http\DTO\RequestOptions Prepared request options.
 	 */
