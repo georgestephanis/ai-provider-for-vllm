@@ -29,4 +29,3 @@ jobs:
           license-check: true
           vulnerability-check: false # Since we only want to use the license check, we need to set this to false as otherwise the default is true.
           show-openssf-scorecard: false # Since we only want to use the license check, we need to set this to false as otherwise the default is true.
-          config-file: 10up/.github/.github/dependency-review-config.yml@trunk
