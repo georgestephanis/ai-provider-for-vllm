@@ -1,5 +1,5 @@
-=== AI Provider for Ollama ===
-Contributors:      fueled, 10up
+=== AI Provider for vLLM ===
+Contributors:      georgestephanis, fueled, 10up
 Tags:              ai, ollama, llm, local-ai, connector
 Requires at least: 7.0
 Tested up to:      7.0
@@ -8,11 +8,11 @@ Requires PHP:      7.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
-Ollama provider for the WordPress AI Client.
+vLLM provider for the WordPress AI Client, based on original work by Fueled.
 
 == Description ==
 
-This plugin provides [Ollama](https://ollama.com/) integration for the WordPress AI Client. It lets WordPress sites use large language models running locally or on a remote Ollama instance for text and image generation and other AI capabilities.
+This plugin provides [vLLM](https://docs.vllm.ai/) integration for the WordPress AI Client. This fork is based on original work by Fueled, and it lets WordPress sites use large language models running on a local or remote vLLM instance for text generation and other AI capabilities.
 
 Ollama exposes an [OpenAI-compatible API](https://ollama.com/blog/openai-compatibility), and this provider uses that API to communicate with any model you have pulled into Ollama (Llama, Mistral, Gemma, Phi, and many more).
 

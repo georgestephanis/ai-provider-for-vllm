@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForVllm\Settings;
+namespace GeorgeStephanis\AiProviderForVllm\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -299,7 +299,7 @@ class VllmSettings {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return \WP_Error|array<string, \Fueled\AiProviderForVllm\Settings\ModelMetadata> The models.
+	 * @return \WP_Error|array<string, \GeorgeStephanis\AiProviderForVllm\Settings\ModelMetadata> The models.
 	 */
 	public function get_models() {
 		$provider_id = 'vllm';

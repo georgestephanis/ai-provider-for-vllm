@@ -1,5 +1,5 @@
 {
-    "name": "fueled/ai-provider-for-vllm",
+    "name": "georgestephanis/ai-provider-for-vllm",
     "description": "vLLM provider for the PHP AI Client SDK. Works as both a Composer package and WordPress plugin.",
     "license": "GPL-2.0-or-later",
     "keywords": [
@@ -11,14 +11,14 @@
     ],
     "authors": [
         {
-            "name": "Fueled",
-            "homepage": "https://fueled.com"
+            "name": "George Stephanis",
+            "homepage": "https://github.com/georgestephanis"
         }
     ],
-    "homepage": "https://github.com/fueled/ai-provider-for-vllm",
+    "homepage": "https://github.com/georgestephanis/ai-provider-for-vllm",
     "support": {
-        "issues": "https://github.com/fueled/ai-provider-for-vllm/issues",
-        "source": "https://github.com/fueled/ai-provider-for-vllm"
+        "issues": "https://github.com/georgestephanis/ai-provider-for-vllm/issues",
+        "source": "https://github.com/georgestephanis/ai-provider-for-vllm"
     },
     "require": {
         "php": ">=7.4"
@@ -44,7 +44,7 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Fueled\\AiProviderForVllm\\": "includes/"
+            "GeorgeStephanis\\AiProviderForVllm\\": "includes/"
         }
     },
     "config": {

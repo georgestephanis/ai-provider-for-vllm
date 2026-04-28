@@ -2,10 +2,10 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForVllm\Provider;
+namespace GeorgeStephanis\AiProviderForVllm\Provider;
 
-use Fueled\AiProviderForVllm\Metadata\VllmModelMetadataDirectory;
-use Fueled\AiProviderForVllm\Models\VllmTextGenerationModel;
+use GeorgeStephanis\AiProviderForVllm\Metadata\VllmModelMetadataDirectory;
+use GeorgeStephanis\AiProviderForVllm\Models\VllmTextGenerationModel;
 use WordPress\AiClient\AiClient;
 use WordPress\AiClient\Common\Exception\RuntimeException;
 use WordPress\AiClient\Providers\ApiBasedImplementation\AbstractApiProvider;

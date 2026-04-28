@@ -2,9 +2,9 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForVllm\Metadata;
+namespace GeorgeStephanis\AiProviderForVllm\Metadata;
 
-use Fueled\AiProviderForVllm\Provider\VllmProvider;
+use GeorgeStephanis\AiProviderForVllm\Provider\VllmProvider;
 use WordPress\AiClient\Messages\Enums\ModalityEnum;
 use WordPress\AiClient\Providers\ApiBasedImplementation\AbstractApiBasedModelMetadataDirectory;
 use WordPress\AiClient\Providers\Http\DTO\Request;

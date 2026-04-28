@@ -2,13 +2,13 @@
 /**
  * vLLM request options trait.
  *
- * @package Fueled\AiProviderForVllm\Models\Traits
+ * @package GeorgeStephanis\AiProviderForVllm\Models\Traits
  * @since   1.0.0
  */
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForVllm\Models\Traits;
+namespace GeorgeStephanis\AiProviderForVllm\Models\Traits;
 
 use WordPress\AiClient\Providers\Http\DTO\RequestOptions;
 

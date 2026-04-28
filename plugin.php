@@ -1,23 +1,23 @@
 <?php
 /**
  * Plugin Name:       AI Provider for vLLM
- * Plugin URI:        https://github.com/fueled/ai-provider-for-vllm
- * Description:       vLLM provider for the WordPress AI Client.
+ * Plugin URI:        https://github.com/georgestephanis/ai-provider-for-vllm
+ * Description:       vLLM provider for the WordPress AI Client, based on original work by Fueled.
  * Requires at least: 7.0
  * Requires PHP:      7.4
  * Version:           1.1.0
- * Author:            Fueled
- * Author URI:        https://fueled.com
+ * Author:            George Stephanis
+ * Author URI:        https://github.com/georgestephanis
  * License:           GPL-2.0-or-later
  * License URI:       https://spdx.org/licenses/GPL-2.0-or-later.html
  * Text Domain:       ai-provider-for-vllm
  *
- * @package Fueled\AiProviderForVllm
+ * @package GeorgeStephanis\AiProviderForVllm
  */
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForVllm;
+namespace GeorgeStephanis\AiProviderForVllm;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

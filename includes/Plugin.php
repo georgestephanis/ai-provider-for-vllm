@@ -8,14 +8,14 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForVllm;
+namespace GeorgeStephanis\AiProviderForVllm;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use Fueled\AiProviderForVllm\Provider\VllmProvider;
-use Fueled\AiProviderForVllm\Settings\VllmSettings;
+use GeorgeStephanis\AiProviderForVllm\Provider\VllmProvider;
+use GeorgeStephanis\AiProviderForVllm\Settings\VllmSettings;
 use WordPress\AiClient\AiClient;
 use WordPress\AiClient\Providers\Http\DTO\ApiKeyRequestAuthentication;
 

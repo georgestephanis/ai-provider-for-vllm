@@ -1,4 +1,4 @@
-# AI Provider for Ollama
+# AI Provider for vLLM
 
 ![AI Provider for Ollama](https://github.com/Fueled/ai-provider-for-ollama/blob/develop/.wordpress-org/banner-1544x500.png)
 
@@ -6,11 +6,11 @@
 
 [![Test](https://github.com/Fueled/ai-provider-for-ollama/actions/workflows/test.yml/badge.svg)](https://github.com/Fueled/ai-provider-for-ollama/actions/workflows/test.yml) [![Plugin Check](https://github.com/Fueled/ai-provider-for-ollama/actions/workflows/plugin-check.yml/badge.svg)](https://github.com/Fueled/ai-provider-for-ollama/actions/workflows/plugin-check.yml) [![Dependency Review](https://github.com/Fueled/ai-provider-for-ollama/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/Fueled/ai-provider-for-ollama/actions/workflows/dependency-review.yml)
 
-> Ollama provider for the PHP and WP AI Client packages.
+> vLLM provider for the PHP and WP AI Client packages, based on original work by Fueled.
 
 ## Overview
 
-Ollama provider for the [PHP AI Client SDK](https://github.com/WordPress/php-ai-client). Works as both a Composer package with the `php-ai-client` package and as a WordPress plugin with the AI Client that is bundled with WordPress 7.0+.
+vLLM provider for the [PHP AI Client SDK](https://github.com/WordPress/php-ai-client). This fork is based on original work by Fueled and works as both a Composer package with the `php-ai-client` package and as a WordPress plugin with the AI Client that is bundled with WordPress 7.0+.
 
 [Ollama](https://ollama.com/) lets you run large language models locally or remotely. Ollama exposes an [OpenAI-compatible API](https://ollama.com/blog/openai-compatibility), and this provider uses that API to communicate with any model you have pulled into Ollama (Llama, Mistral, Gemma, Phi, and many more) or any available Ollama Cloud model.
 
@@ -65,7 +65,7 @@ $result = wp_ai_client_prompt( 'Hello, how are you?' )
 ### Standalone PHP (php-ai-client)
 
 ```php
-use Fueled\AiProviderForOllama\Provider\OllamaProvider;
+use GeorgeStephanis\AiProviderForOllama\Provider\OllamaProvider;
 use WordPress\AiClient\AiClient;
 use WordPress\AiClient\Providers\Http\DTO\ApiKeyRequestAuthentication;
 

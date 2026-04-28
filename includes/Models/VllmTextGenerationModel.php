@@ -2,10 +2,10 @@
 
 declare( strict_types=1 );
 
-namespace Fueled\AiProviderForVllm\Models;
+namespace GeorgeStephanis\AiProviderForVllm\Models;
 
-use Fueled\AiProviderForVllm\Models\Traits\VllmRequestOptionsTrait;
-use Fueled\AiProviderForVllm\Provider\VllmProvider;
+use GeorgeStephanis\AiProviderForVllm\Models\Traits\VllmRequestOptionsTrait;
+use GeorgeStephanis\AiProviderForVllm\Provider\VllmProvider;
 use WordPress\AiClient\Providers\Http\DTO\Request;
 use WordPress\AiClient\Providers\Http\DTO\RequestOptions;
 use WordPress\AiClient\Providers\Http\Enums\HttpMethodEnum;
