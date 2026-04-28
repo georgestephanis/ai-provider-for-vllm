@@ -50,10 +50,7 @@ const CAPABILITY_LABELS: Record< string, string > = {
 	speech_generation: __( 'Speech generation', 'ai-provider-for-vllm' ),
 	music_generation: __( 'Music generation', 'ai-provider-for-vllm' ),
 	video_generation: __( 'Video generation', 'ai-provider-for-vllm' ),
-	embedding_generation: __(
-		'Embedding generation',
-		'ai-provider-for-vllm'
-	),
+	embedding_generation: __( 'Embedding generation', 'ai-provider-for-vllm' ),
 	chat_history: __( 'Chat history', 'ai-provider-for-vllm' ),
 };
 
